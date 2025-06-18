@@ -1,18 +1,58 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React, { useState } from 'react';
+import { CartProvider } from './context/CartContext';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import Cart from './components/Cart';
 import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import ContactPage from './pages/ContactPage';
 import AdminPage from './pages/AdminPage';
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('home');
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'home':
+        return <HomePage />;
+      case 'about':
+        return <AboutPage />;
+      case 'contact':
+        return <ContactPage />;
+      case 'admin':
+        return <AdminPage />;
+      default:
+        return <HomePage />;
+    }
+  };
+
+  // Don't show header/footer on admin page
+  if (currentPage === 'admin') {
+    return <AdminPage />;
+  }
+
   return (
-    <Router>
-      <div className="min-h-screen bg-white">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
+    <CartProvider>
+      <div className="min-h-screen bg-cream-white">
+        <Header 
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          onCartOpen={() => setIsCartOpen(true)}
+        />
+        
+        <main className="flex-1">
+          {renderPage()}
+        </main>
+        
+        <Footer />
+        
+        <Cart 
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+        />
       </div>
-    </Router>
+    </CartProvider>
   );
 }
 
