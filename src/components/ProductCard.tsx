@@ -40,6 +40,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
       if (error) {
         console.error('Error creating order:', error);
+        alert('Failed to create order. Please try again.');
         return;
       }
 
@@ -56,19 +57,24 @@ Please confirm availability and provide payment details.`;
       window.open(whatsappUrl, '_blank');
     } catch (error) {
       console.error('Error processing order:', error);
+      alert('An error occurred. Please try again.');
     }
   };
 
   return (
-    <div className="product-card bg-white rounded-2xl shadow-md overflow-hidden">
+    <div className="product-card bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300">
       <div className="relative overflow-hidden">
         <img
           src={product.image_url || 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400'}
           alt={product.name}
-          className="product-image transition-transform duration-300"
+          className="product-image w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400';
+          }}
         />
         <div className="absolute top-4 left-4">
-          <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
             product.in_stock 
               ? 'bg-green-100 text-green-800' 
               : 'bg-red-100 text-red-800'
@@ -79,41 +85,42 @@ Please confirm availability and provide payment details.`;
       </div>
 
       <div className="p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
+        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
           {product.name}
         </h3>
         {product.description && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+          <p className="text-sm text-gray-600 mb-4 line-clamp-3">
             {product.description}
           </p>
         )}
         
-        <div className="flex items-center justify-between">
-          <span className="text-xl font-bold text-gray-900">
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-2xl font-bold text-rose-600">
             {formatPrice(product.price)}
           </span>
-          <button
-            onClick={handleOrderViaWhatsApp}
-            disabled={!product.in_stock}
-            className={`inline-flex items-center px-4 py-2 font-medium rounded-full shadow-md transition-all duration-200 ${
-              product.in_stock
-                ? 'btn-rose-gold text-white hover:scale-105'
-                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-            }`}
-          >
-            {product.in_stock ? (
-              <>
-                <ShoppingBag className="h-4 w-4 mr-1" />
-                Order via WhatsApp
-              </>
-            ) : (
-              <>
-                <AlertCircle className="h-4 w-4 mr-1" />
-                Out of Stock
-              </>
-            )}
-          </button>
         </div>
+
+        <button
+          onClick={handleOrderViaWhatsApp}
+          disabled={!product.in_stock}
+          className={`w-full inline-flex items-center justify-center px-6 py-3 font-semibold rounded-full shadow-md transition-all duration-200 ${
+            product.in_stock
+              ? 'btn-rose-gold text-white hover:scale-105 hover:shadow-lg'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          {product.in_stock ? (
+            <>
+              <ShoppingBag className="h-5 w-5 mr-2" />
+              Order via WhatsApp
+            </>
+          ) : (
+            <>
+              <AlertCircle className="h-5 w-5 mr-2" />
+              Out of Stock
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

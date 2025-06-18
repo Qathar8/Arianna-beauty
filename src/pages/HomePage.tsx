@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Search } from 'lucide-react';
+import { Sparkles, Search, AlertCircle, RefreshCw } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { Product, supabase } from '../../lib/supabase';
 
 const HomePage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
@@ -14,6 +15,7 @@ const HomePage: React.FC = () => {
 
   const fetchProducts = async () => {
     try {
+      setError(null);
       const { data, error } = await supabase
         .from('products')
         .select('*')
@@ -21,8 +23,9 @@ const HomePage: React.FC = () => {
 
       if (error) throw error;
       setProducts(data || []);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching products:', error);
+      setError('Failed to load products. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -83,6 +86,25 @@ const HomePage: React.FC = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center p-8">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Something went wrong</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={fetchProducts}
+            className="btn-rose-gold inline-flex items-center px-6 py-3 text-white font-semibold rounded-lg"
+          >
+            <RefreshCw className="h-5 w-5 mr-2" />
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -124,7 +146,7 @@ const HomePage: React.FC = () => {
                 placeholder="Search products..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-rose-500 focus:border-transparent"
+                className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-full leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-2 focus:ring-rose-500 focus:border-transparent shadow-md"
               />
             </div>
           </div>
@@ -148,9 +170,26 @@ const HomePage: React.FC = () => {
           
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg">
-                {searchTerm ? 'No products found matching your search.' : 'No products available at the moment.'}
-              </p>
+              <div className="max-w-md mx-auto">
+                <AlertCircle className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                  {searchTerm ? 'No products found' : 'No products available'}
+                </h3>
+                <p className="text-gray-500">
+                  {searchTerm 
+                    ? 'Try adjusting your search terms or browse all products.' 
+                    : 'Products will appear here once they are added to the store.'
+                  }
+                </p>
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm('')}
+                    className="mt-4 text-rose-600 hover:text-rose-700 font-medium"
+                  >
+                    Clear search
+                  </button>
+                )}
+              </div>
             </div>
           ) : (
             <div className="product-grid">
