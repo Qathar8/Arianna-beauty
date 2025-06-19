@@ -18,26 +18,12 @@ export async function onRequest(context: any) {
     if (request.method === 'PATCH') {
       const orderId = params.id;
       const body = await request.json();
-      const { status, whatsapp } = body;
+      const { whatsapp } = body;
 
-      // Build update query dynamically
-      const updates = [];
-      const values = [];
-
-      if (status !== undefined) {
-        updates.push('status = ?');
-        values.push(status);
-      }
-
-      if (whatsapp !== undefined) {
-        updates.push('whatsapp = ?');
-        values.push(whatsapp);
-      }
-
-      if (updates.length === 0) {
+      if (!whatsapp) {
         return new Response(JSON.stringify({
           data: null,
-          error: { message: 'No fields to update' }
+          error: { message: 'WhatsApp field is required' }
         }), {
           status: 400,
           headers: {
@@ -47,18 +33,16 @@ export async function onRequest(context: any) {
         });
       }
 
-      values.push(parseInt(orderId));
-
       // Update order
       const result = await env.DB.prepare(
-        `UPDATE orders SET ${updates.join(', ')} WHERE id = ?`
-      ).bind(...values).run();
+        'UPDATE orders SET whatsapp = ? WHERE id = ?'
+      ).bind(whatsapp, orderId).run();
 
       if (!result.success) {
         throw new Error('Failed to update order');
       }
 
-      if (result.meta.changes === 0) {
+      if (result.changes === 0) {
         return new Response(JSON.stringify({
           data: null,
           error: { message: 'Order not found' }
@@ -74,7 +58,7 @@ export async function onRequest(context: any) {
       // Fetch the updated order
       const { results } = await env.DB.prepare(
         'SELECT * FROM orders WHERE id = ?'
-      ).bind(parseInt(orderId)).all();
+      ).bind(orderId).all();
 
       const updatedOrder = {
         ...results[0],

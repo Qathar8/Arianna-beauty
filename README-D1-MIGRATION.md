@@ -59,21 +59,20 @@ The following API endpoints are now available:
 ## 📊 Database Schema
 
 ### Products Table
-- `id` - INTEGER PRIMARY KEY AUTOINCREMENT
+- `id` - TEXT PRIMARY KEY (UUID)
 - `name` - TEXT NOT NULL
 - `description` - TEXT
 - `price` - INTEGER (price in cents)
 - `image_url` - TEXT
 - `in_stock` - BOOLEAN DEFAULT 1
-- `created_at` - TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+- `created_at` - TEXT DEFAULT CURRENT_TIMESTAMP
 
 ### Orders Table
-- `id` - INTEGER PRIMARY KEY AUTOINCREMENT
+- `id` - TEXT PRIMARY KEY (UUID)
 - `items` - TEXT (JSON string of order items)
 - `total` - INTEGER (total price in cents)
-- `whatsapp` - TEXT DEFAULT 'pending'
-- `created_at` - TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-- `status` - TEXT DEFAULT 'pending'
+- `whatsapp` - TEXT NOT NULL
+- `created_at` - TEXT DEFAULT CURRENT_TIMESTAMP
 
 ## 🔄 Migration Changes
 
