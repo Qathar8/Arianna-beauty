@@ -1,0 +1,30 @@
+# Cloudflare Pages configuration for ARIANNA BEAUTY
+name = "arianna-beauty"
+compatibility_date = "2024-01-15"
+
+[env.production]
+# D1 Database binding
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "arianna-beauty-db"
+database_id = "your-database-id-here"
+
+[env.preview]
+# D1 Database binding for preview
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "arianna-beauty-db-preview"
+database_id = "your-preview-database-id-here"
+
+# Build configuration
+[build]
+command = "npm run build"
+destination = "dist"
+
+# Functions configuration
+[functions]
+directory = "functions"
+
+# Environment variables (set these in Cloudflare dashboard)
+[vars]
+NODE_ENV = "production"
