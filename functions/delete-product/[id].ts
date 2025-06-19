@@ -21,7 +21,7 @@ export async function onRequest(context: any) {
       // Check if product exists
       const { results: existingProduct } = await env.DB.prepare(
         'SELECT id FROM products WHERE id = ?'
-      ).bind(parseInt(productId)).all();
+      ).bind(productId).all();
 
       if (existingProduct.length === 0) {
         return new Response(JSON.stringify({
@@ -39,7 +39,7 @@ export async function onRequest(context: any) {
       // Delete product
       const result = await env.DB.prepare(
         'DELETE FROM products WHERE id = ?'
-      ).bind(parseInt(productId)).run();
+      ).bind(productId).run();
 
       if (!result.success) {
         throw new Error('Failed to delete product');

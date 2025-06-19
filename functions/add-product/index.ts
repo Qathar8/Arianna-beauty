@@ -33,10 +33,14 @@ export async function onRequest(context: any) {
         });
       }
 
+      // Generate UUID for the product
+      const productId = crypto.randomUUID();
+
       // Insert new product
       const result = await env.DB.prepare(
-        'INSERT INTO products (name, description, price, image_url, in_stock) VALUES (?, ?, ?, ?, ?)'
+        'INSERT INTO products (id, name, description, price, image_url, in_stock) VALUES (?, ?, ?, ?, ?, ?)'
       ).bind(
+        productId,
         name,
         description || null,
         parseInt(price),
@@ -51,7 +55,7 @@ export async function onRequest(context: any) {
       // Fetch the created product
       const { results } = await env.DB.prepare(
         'SELECT * FROM products WHERE id = ?'
-      ).bind(result.meta.last_row_id).all();
+      ).bind(productId).all();
 
       return new Response(JSON.stringify({
         data: results[0],

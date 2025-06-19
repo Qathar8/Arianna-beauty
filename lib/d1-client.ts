@@ -2,7 +2,7 @@
 // This replaces the Supabase client with D1 API calls
 
 export interface Product {
-  id: number;
+  id: string;
   name: string;
   description: string | null;
   price: number;
@@ -12,12 +12,11 @@ export interface Product {
 }
 
 export interface Order {
-  id: number;
+  id: string;
   items: any[];
   total: number;
   whatsapp: string;
   created_at: string;
-  status: string;
 }
 
 export interface Database {
@@ -30,7 +29,7 @@ export interface Database {
       };
       orders: {
         Row: Order;
-        Insert: Omit<Order, 'id' | 'created_at' | 'status'>;
+        Insert: Omit<Order, 'id' | 'created_at'>;
         Update: Partial<Omit<Order, 'id' | 'created_at'>>;
       };
     };

@@ -57,10 +57,14 @@ export async function onRequest(context: any) {
         });
       }
 
+      // Generate UUID for the order
+      const orderId = crypto.randomUUID();
+
       // Insert new order
       const result = await env.DB.prepare(
-        'INSERT INTO orders (items, total, whatsapp) VALUES (?, ?, ?)'
+        'INSERT INTO orders (id, items, total, whatsapp) VALUES (?, ?, ?, ?)'
       ).bind(
+        orderId,
         JSON.stringify(items),
         parseInt(total),
         whatsapp || 'pending'
@@ -73,7 +77,7 @@ export async function onRequest(context: any) {
       // Fetch the created order
       const { results } = await env.DB.prepare(
         'SELECT * FROM orders WHERE id = ?'
-      ).bind(result.meta.last_row_id).all();
+      ).bind(orderId).all();
 
       const createdOrder = {
         ...results[0],

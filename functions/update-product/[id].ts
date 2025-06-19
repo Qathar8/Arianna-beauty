@@ -43,14 +43,14 @@ export async function onRequest(context: any) {
         parseInt(price),
         image_url || null,
         in_stock ? 1 : 0,
-        parseInt(productId)
+        productId
       ).run();
 
       if (!result.success) {
         throw new Error('Failed to update product');
       }
 
-      if (result.meta.changes === 0) {
+      if (result.changes === 0) {
         return new Response(JSON.stringify({
           data: null,
           error: { message: 'Product not found' }
@@ -66,7 +66,7 @@ export async function onRequest(context: any) {
       // Fetch the updated product
       const { results } = await env.DB.prepare(
         'SELECT * FROM products WHERE id = ?'
-      ).bind(parseInt(productId)).all();
+      ).bind(productId).all();
 
       return new Response(JSON.stringify({
         data: results[0],
