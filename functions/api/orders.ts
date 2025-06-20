@@ -20,16 +20,20 @@ const OrderSchema = z.object({
 });
 
 app.post('/', getValidatedBody(OrderSchema), async (c) => {
-  const { name, phone, items, total } = c.req.valid('json');
-  const db = env(c).DB;
+  try {
+    const { name, phone, items, total } = c.req.valid('json');
+    const db = env(c).DB;
 
-  const result = await db.prepare(`
-    INSERT INTO orders (name, phone, items, total)
-    VALUES (?, ?, ?, ?)
-  `).bind(name, phone, JSON.stringify(items), total).run();
+    const result = await db.prepare(`
+      INSERT INTO orders (name, phone, items, total)
+      VALUES (?, ?, ?, ?)
+    `).bind(name, phone, JSON.stringify(items), total).run();
 
-  return c.json({ success: true, orderId: result.meta.last_row_id });
+    return c.json({ success: true, orderId: result.meta.last_row_id });
+  } catch (err) {
+    console.error('Error in order API:', err);
+    return c.json({ success: false, error: 'Something went wrong.' }, 500);
+  }
 });
 
 export default app;
-
