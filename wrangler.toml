@@ -1,24 +1,18 @@
-# Cloudflare configuration for ARIANNA BEAUTY
-name = "arianna-beauty"
+# wrangler.toml for Cloudflare Pages + D1
+
+# Required for Cloudflare Pages + Functions
+pages_build_output_dir = "./dist"
 compatibility_date = "2024-01-15"
 
-# ✅ Tell Cloudflare Pages where to find your built assets
-pages_build_output_dir = "./dist"
-
-# ✅ D1 database binding (top level)
-[[d1_databases]]
-binding = "arianna-beauty-db"
-database_name = "arianna-beauty-db"
-database_id = "952038a3-7ab5-406b-9193-12e8ebfccc5f"
-
-# ✅ Build config for local Wrangler use (not required for Pages)
-[build]
-command = "npm run build"
-
-# ✅ Optional environment config placeholders
+# Move everything under [env.production] for Pages
 [env.production]
-[env.preview]
+  
+  # ✅ D1 database binding
+  [[env.production.d1_databases]]
+  binding = "arianna-beauty-db"
+  database_name = "arianna-beauty-db"
+  database_id = "952038a3-7ab5-406b-9193-12e8ebfccc5f"
 
-# ✅ Environment variables
-[vars]
-NODE_ENV = "production"
+  # ✅ Environment variables
+  [env.production.vars]
+  NODE_ENV = "production"
