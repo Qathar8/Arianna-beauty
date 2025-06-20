@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, Search, AlertCircle, RefreshCw } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
-import { Product, supabase } from '../../lib/supabase';
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image_url: string;
+  in_stock: boolean;
+  created_at: string;
+}
 
 const HomePage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -16,13 +25,10 @@ const HomePage: React.FC = () => {
   const fetchProducts = async () => {
     try {
       setError(null);
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setProducts(data || []);
+      const res = await fetch('/api/products');
+      if (!res.ok) throw new Error('Failed to fetch products');
+      const data = await res.json();
+      setProducts(data);
     } catch (error: any) {
       console.error('Error fetching products:', error);
       setError('Failed to load products. Please try again.');
@@ -49,27 +55,22 @@ const HomePage: React.FC = () => {
                   Premium Collection
                 </span>
               </div>
-              
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
                 Premium Scents &{' '}
                 <span className="bg-rose-gold bg-clip-text text-transparent">
                   Beauty
                 </span>
               </h1>
-              
               <p className="text-lg text-gray-600 mb-4">
                 Handpicked for You
               </p>
-              
               <p className="text-base text-gray-500 mb-8 max-w-lg mx-auto">
-                Discover our curated collection of luxury perfumes and beauty products, 
-                carefully selected to enhance your natural elegance and confidence.
+                Discover our curated collection of luxury perfumes and beauty products.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Loading Products */}
         <section className="py-16 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="animate-pulse">
@@ -110,7 +111,6 @@ const HomePage: React.FC = () => {
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-rose-50 via-white to-amber-50 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-rose-100/20 to-amber-100/20"></div>
-        
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
           <div className="text-center">
             <div className="flex items-center justify-center mb-4">
@@ -119,24 +119,19 @@ const HomePage: React.FC = () => {
                 Premium Collection
               </span>
             </div>
-            
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6">
               Premium Scents &{' '}
               <span className="bg-rose-gold bg-clip-text text-transparent">
                 Beauty
               </span>
             </h1>
-            
             <p className="text-lg text-gray-600 mb-4">
               Handpicked for You
             </p>
-            
             <p className="text-base text-gray-500 mb-8 max-w-lg mx-auto">
-              Discover our curated collection of luxury perfumes and beauty products, 
-              carefully selected to enhance your natural elegance and confidence.
+              Discover our curated collection of luxury perfumes and beauty products.
             </p>
 
-            {/* Search Bar */}
             <div className="max-w-md mx-auto relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
@@ -163,11 +158,10 @@ const HomePage: React.FC = () => {
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               {searchTerm 
                 ? `Found ${filteredProducts.length} product${filteredProducts.length !== 1 ? 's' : ''} matching "${searchTerm}"`
-                : 'Discover our complete collection of premium beauty and fragrance products'
-              }
+                : 'Discover our complete collection of premium beauty and fragrance products'}
             </p>
           </div>
-          
+
           {filteredProducts.length === 0 ? (
             <div className="text-center py-12">
               <div className="max-w-md mx-auto">
@@ -178,8 +172,7 @@ const HomePage: React.FC = () => {
                 <p className="text-gray-500">
                   {searchTerm 
                     ? 'Try adjusting your search terms or browse all products.' 
-                    : 'Products will appear here once they are added to the store.'
-                  }
+                    : 'Products will appear here once they are added to the store.'}
                 </p>
                 {searchTerm && (
                   <button
