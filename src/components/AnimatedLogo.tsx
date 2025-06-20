@@ -7,7 +7,7 @@ const AnimatedLogo: React.FC = () => {
     // Auto-trigger animation on page load
     const timer = setTimeout(() => {
       setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 1200);
+      setTimeout(() => setIsAnimating(false), 1400);
     }, 1500);
 
     return () => clearTimeout(timer);
@@ -16,7 +16,7 @@ const AnimatedLogo: React.FC = () => {
   const handleLogoHover = () => {
     if (!isAnimating) {
       setIsAnimating(true);
-      setTimeout(() => setIsAnimating(false), 1200);
+      setTimeout(() => setIsAnimating(false), 1400);
     }
   };
 
@@ -40,7 +40,7 @@ const AnimatedLogo: React.FC = () => {
           </svg>
         </div>
         
-        {/* Mist Particles */}
+        {/* Enhanced Mist Particles - More Visible */}
         <div className="mist-particle mist-1"></div>
         <div className="mist-particle mist-2"></div>
         <div className="mist-particle mist-3"></div>
@@ -49,6 +49,8 @@ const AnimatedLogo: React.FC = () => {
         <div className="mist-particle mist-6"></div>
         <div className="mist-particle mist-7"></div>
         <div className="mist-particle mist-8"></div>
+        <div className="mist-particle mist-9"></div>
+        <div className="mist-particle mist-10"></div>
       </div>
     </div>
   );

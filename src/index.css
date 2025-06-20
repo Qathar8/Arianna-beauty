@@ -76,99 +76,145 @@ body {
 .perfume-bottle {
   transform: rotate(15deg);
   transform-origin: center;
-  filter: drop-shadow(0 2px 4px rgba(212, 163, 115, 0.3));
+  filter: drop-shadow(0 4px 8px rgba(212, 163, 115, 0.4));
 }
 
-/* Enhanced Spray Mist Animation */
+/* Enhanced Spray Mist Animation - More Visible */
 @keyframes sprayMist {
   0% {
-    opacity: 0.9;
+    opacity: 1;
     transform: translateX(0) translateY(0) scale(1);
     background: var(--rose-gold);
+    box-shadow: 0 0 8px rgba(212, 163, 115, 0.8), 0 0 16px rgba(212, 163, 115, 0.6);
   }
-  25% {
-    opacity: 0.8;
+  15% {
+    opacity: 0.95;
     background: var(--blush-pink);
+    box-shadow: 0 0 12px rgba(244, 194, 194, 0.9), 0 0 20px rgba(244, 194, 194, 0.7);
+  }
+  30% {
+    opacity: 0.9;
+    background: var(--warm-amber);
+    box-shadow: 0 0 16px rgba(229, 194, 164, 0.8), 0 0 24px rgba(229, 194, 164, 0.6);
   }
   50% {
-    opacity: 0.6;
-    background: var(--warm-amber);
+    opacity: 0.8;
+    background: var(--rose-gold-light);
+    box-shadow: 0 0 20px rgba(232, 196, 160, 0.7), 0 0 28px rgba(232, 196, 160, 0.5);
   }
   75% {
-    opacity: 0.3;
-    background: var(--rose-gold-light);
+    opacity: 0.6;
+    background: rgba(244, 194, 194, 0.8);
+    box-shadow: 0 0 24px rgba(244, 194, 194, 0.6), 0 0 32px rgba(244, 194, 194, 0.4);
   }
   100% {
     opacity: 0;
-    transform: translateX(80px) translateY(-20px) scale(1.8);
-    background: rgba(244, 194, 194, 0.2);
+    transform: translateX(100px) translateY(-30px) scale(2.5);
+    background: rgba(244, 194, 194, 0.3);
+    box-shadow: 0 0 32px rgba(244, 194, 194, 0.3), 0 0 40px rgba(244, 194, 194, 0.2);
   }
 }
 
 .mist-particle {
   position: absolute;
-  width: 3px;
-  height: 3px;
+  width: 5px;
+  height: 5px;
   background: var(--rose-gold);
   border-radius: 50%;
   pointer-events: none;
-  box-shadow: 0 0 6px rgba(212, 163, 115, 0.4);
+  box-shadow: 0 0 10px rgba(212, 163, 115, 0.6), 0 0 20px rgba(212, 163, 115, 0.4);
+  z-index: 10;
 }
 
 .animate-spray .mist-1 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0s;
-  top: 8px;
+  top: 6px;
   left: 45px;
+  width: 6px;
+  height: 6px;
 }
 
 .animate-spray .mist-2 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0.1s;
-  top: 12px;
+  top: 10px;
   left: 47px;
+  width: 5px;
+  height: 5px;
 }
 
 .animate-spray .mist-3 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0.2s;
-  top: 16px;
+  top: 14px;
   left: 49px;
+  width: 7px;
+  height: 7px;
 }
 
 .animate-spray .mist-4 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0.3s;
-  top: 6px;
+  top: 4px;
   left: 51px;
+  width: 4px;
+  height: 4px;
 }
 
 .animate-spray .mist-5 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0.4s;
-  top: 14px;
+  top: 12px;
   left: 53px;
+  width: 6px;
+  height: 6px;
 }
 
 .animate-spray .mist-6 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0.5s;
-  top: 18px;
+  top: 16px;
   left: 55px;
+  width: 5px;
+  height: 5px;
 }
 
 .animate-spray .mist-7 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0.6s;
-  top: 4px;
+  top: 2px;
   left: 57px;
+  width: 8px;
+  height: 8px;
 }
 
 .animate-spray .mist-8 {
-  animation: sprayMist 1.2s ease-out;
+  animation: sprayMist 1.4s ease-out;
   animation-delay: 0.7s;
-  top: 10px;
+  top: 8px;
   left: 59px;
+  width: 6px;
+  height: 6px;
+}
+
+/* Additional mist particles for more visibility */
+.animate-spray .mist-9 {
+  animation: sprayMist 1.4s ease-out;
+  animation-delay: 0.8s;
+  top: 18px;
+  left: 61px;
+  width: 4px;
+  height: 4px;
+}
+
+.animate-spray .mist-10 {
+  animation: sprayMist 1.4s ease-out;
+  animation-delay: 0.9s;
+  top: 6px;
+  left: 63px;
+  width: 7px;
+  height: 7px;
 }
 
 /* Custom gradient backgrounds */
