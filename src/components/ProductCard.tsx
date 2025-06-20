@@ -1,7 +1,14 @@
 import React from 'react';
 import { ShoppingBag, AlertCircle } from 'lucide-react';
-import { Product } from '../../lib/supabase';
-import { supabase } from '../../lib/supabase';
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image_url?: string;
+  in_stock: boolean;
+}
 
 interface ProductCardProps {
   product: Product;
@@ -20,31 +27,34 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     if (!product.in_stock) return;
 
     try {
-      // Create order in database
-      const orderData = {
-        items: [{ 
-          id: product.id, 
-          name: product.name, 
-          price: product.price, 
-          quantity: 1 
-        }],
+      // Create order via Cloudflare API
+      const orderPayload = {
+        items: [
+          {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+          },
+        ],
         total: product.price,
-        whatsapp: 'pending' // Will be updated when user provides number
+        whatsapp: 'pending',
       };
 
-      const { data, error } = await supabase
-        .from('orders')
-        .insert([orderData])
-        .select()
-        .single();
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload),
+      });
 
-      if (error) {
-        console.error('Error creating order:', error);
+      if (!res.ok) {
+        console.error('Failed to create order');
         alert('Failed to create order. Please try again.');
         return;
       }
 
-      // Create WhatsApp message
+      const data = await res.json();
+
       const message = `Hello ARIANNA BEAUTY! I'd like to order:
 
 Product: ${product.name}
@@ -65,39 +75,37 @@ Please confirm availability and provide payment details.`;
     <div className="product-card bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300">
       <div className="relative overflow-hidden">
         <img
-          src={product.image_url || 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400'}
+          src={
+            product.image_url ||
+            'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400'
+          }
           alt={product.name}
           className="product-image w-full h-64 object-cover transition-transform duration-300 hover:scale-105"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400';
+            target.src =
+              'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400';
           }}
         />
         <div className="absolute top-4 left-4">
-          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
-            product.in_stock 
-              ? 'bg-green-100 text-green-800' 
-              : 'bg-red-100 text-red-800'
-          }`}>
+          <span
+            className={`px-3 py-1 text-xs font-semibold rounded-full ${
+              product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            }`}
+          >
             {product.in_stock ? 'In Stock' : 'Out of Stock'}
           </span>
         </div>
       </div>
 
       <div className="p-6">
-        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-          {product.name}
-        </h3>
+        <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{product.name}</h3>
         {product.description && (
-          <p className="text-sm text-gray-600 mb-4 line-clamp-3">
-            {product.description}
-          </p>
+          <p className="text-sm text-gray-600 mb-4 line-clamp-3">{product.description}</p>
         )}
-        
+
         <div className="flex items-center justify-between mb-4">
-          <span className="text-2xl font-bold text-rose-600">
-            {formatPrice(product.price)}
-          </span>
+          <span className="text-2xl font-bold text-rose-600">{formatPrice(product.price)}</span>
         </div>
 
         <button
