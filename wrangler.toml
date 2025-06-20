@@ -2,29 +2,29 @@
 name = "arianna-beauty"
 compatibility_date = "2024-01-15"
 
-[env.production]
-# D1 Database binding
-[[env.production.d1_databases]]
-binding = "DB"
+# ✅ D1 database binding (top level)
+[[d1_databases]]
+binding = "arianna-beauty-db"  # 👈 must match what you're using in the CLI
 database_name = "arianna-beauty-db"
-database_id = "your-database-id-here"
+database_id = "952038a3-7ab5-406b-9193-12e8ebfccc5f"  # 👈 replace with your actual DB ID
+
+# Optional: remove or update these if needed
+[env.production]
+# (keep empty or minimal here unless you need custom prod settings)
 
 [env.preview]
-# D1 Database binding for preview
-[[env.preview.d1_databases]]
-binding = "DB"
-database_name = "arianna-beauty-db-preview"
-database_id = "your-preview-database-id-here"
+# (same here)
 
 # Build configuration
 [build]
 command = "npm run build"
-destination = "dist"
+# ❌ Remove "destination" — not valid for Wrangler
+# destination = "dist"
 
 # Functions configuration
 [functions]
 directory = "functions"
 
-# Environment variables (set these in Cloudflare dashboard)
+# Environment variables (optional)
 [vars]
 NODE_ENV = "production"
