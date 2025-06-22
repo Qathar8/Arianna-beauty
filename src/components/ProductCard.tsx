@@ -20,7 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       style: 'currency',
       currency: 'KES',
       minimumFractionDigits: 0,
-    }).format(price / 100); // Convert from cents
+    }).format(price);
   };
 
   const handleOrderViaWhatsApp = async () => {
@@ -41,19 +41,38 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         whatsapp: 'pending',
       };
 
+      console.log('Sending order payload:', orderPayload);
+
       const res = await fetch('/api/orders', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
         body: JSON.stringify(orderPayload),
       });
 
+      console.log('Response status:', res.status);
+      console.log('Response headers:', Object.fromEntries(res.headers.entries()));
+
       if (!res.ok) {
-        console.error('Failed to create order');
-        alert('Failed to create order. Please try again.');
+        const errorText = await res.text();
+        console.error('API Error Response:', errorText);
+        
+        let errorMessage = 'Failed to create order. Please try again.';
+        try {
+          const errorData = JSON.parse(errorText);
+          errorMessage = errorData.error || errorMessage;
+        } catch (e) {
+          // If response is not JSON, use default message
+        }
+        
+        alert(errorMessage);
         return;
       }
 
       const data = await res.json();
+      console.log('Order created successfully:', data);
 
       const message = `Hello ARIANNA BEAUTY! I'd like to order:
 
@@ -67,12 +86,12 @@ Please confirm availability and provide payment details.`;
       window.open(whatsappUrl, '_blank');
     } catch (error) {
       console.error('Error processing order:', error);
-      alert('An error occurred. Please try again.');
+      alert('An error occurred while processing your order. Please try again.');
     }
   };
 
   return (
-    <div className="product-card bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300">
+    <div className="product-card bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 border border-rose-100">
       <div className="relative overflow-hidden">
         <img
           src={
@@ -89,8 +108,10 @@ Please confirm availability and provide payment details.`;
         />
         <div className="absolute top-4 left-4">
           <span
-            className={`px-3 py-1 text-xs font-semibold rounded-full ${
-              product.in_stock ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+            className={`px-3 py-1 text-xs font-bold rounded-full shadow-md ${
+              product.in_stock 
+                ? 'bg-emerald-500 text-white' 
+                : 'bg-red-500 text-white'
             }`}
           >
             {product.in_stock ? 'In Stock' : 'Out of Stock'}
@@ -111,9 +132,9 @@ Please confirm availability and provide payment details.`;
         <button
           onClick={handleOrderViaWhatsApp}
           disabled={!product.in_stock}
-          className={`w-full inline-flex items-center justify-center px-6 py-3 font-semibold rounded-full shadow-md transition-all duration-200 ${
+          className={`w-full inline-flex items-center justify-center px-6 py-3 font-bold rounded-full shadow-lg transition-all duration-200 ${
             product.in_stock
-              ? 'btn-rose-gold text-white hover:scale-105 hover:shadow-lg'
+              ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white hover:from-rose-600 hover:to-pink-700 hover:scale-105 hover:shadow-xl transform'
               : 'bg-gray-300 text-gray-500 cursor-not-allowed'
           }`}
         >

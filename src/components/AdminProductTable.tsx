@@ -133,12 +133,12 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Products Management</h2>
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden border border-rose-100">
+      <div className="px-6 py-4 border-b border-rose-200 flex justify-between items-center bg-gradient-to-r from-rose-50 to-pink-50">
+        <h2 className="text-xl font-bold text-gray-900">Products Management</h2>
         <button
           onClick={() => setShowAddForm(true)}
-          className="inline-flex items-center px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-md hover:bg-rose-700"
+          className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-sm font-bold rounded-md hover:from-rose-600 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add Product
@@ -147,47 +147,47 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
 
       {/* Add Product Form */}
       {showAddForm && (
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Add New Product</h3>
+        <div className="px-6 py-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-blue-200">
+          <h3 className="text-lg font-bold text-gray-900 mb-4">Add New Product</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Name *</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Product name"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Price (KES) *</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Price (KES) *</label>
               <input
                 type="number"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="0.00"
                 step="0.01"
               />
             </div>
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Description</label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 rows={3}
                 placeholder="Product description"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Image URL</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Image URL</label>
               <input
                 type="url"
                 value={formData.image_url}
                 onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-rose-500"
+                className="w-full px-3 py-2 border-2 border-blue-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="https://example.com/image.jpg"
               />
             </div>
@@ -197,9 +197,9 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
                 id="in_stock"
                 checked={formData.in_stock}
                 onChange={(e) => setFormData({ ...formData, in_stock: e.target.checked })}
-                className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-2 border-blue-300 rounded"
               />
-              <label htmlFor="in_stock" className="ml-2 block text-sm text-gray-900">
+              <label htmlFor="in_stock" className="ml-2 block text-sm font-bold text-gray-900">
                 In Stock
               </label>
             </div>
@@ -207,7 +207,7 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
           <div className="flex justify-end space-x-3 mt-4">
             <button
               onClick={handleCancel}
-              className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-50"
+              className="px-4 py-2 border-2 border-gray-400 text-gray-700 text-sm font-bold rounded-md hover:bg-gray-100 transition-colors duration-200"
             >
               <X className="h-4 w-4 mr-1 inline" />
               Cancel
@@ -215,7 +215,7 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
             <button
               onClick={() => handleSave()}
               disabled={loading}
-              className="px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-md hover:bg-rose-700 disabled:opacity-50"
+              className="px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-bold rounded-md hover:from-blue-600 hover:to-indigo-700 disabled:opacity-50 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
             >
               <Save className="h-4 w-4 mr-1 inline" />
               {loading ? 'Saving...' : 'Save Product'}
@@ -226,55 +226,55 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
 
       {/* Products Table */}
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-rose-200">
+          <thead className="bg-gradient-to-r from-rose-100 to-pink-100">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Product
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Price
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Stock
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-white divide-y divide-rose-100">
             {products.map((product) => (
-              <tr key={product.id} className="hover:bg-gray-50">
+              <tr key={product.id} className="hover:bg-rose-50 transition-colors duration-200">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 h-12 w-12">
                       <img
-                        className="h-12 w-12 rounded-lg object-cover"
+                        className="h-12 w-12 rounded-lg object-cover border-2 border-rose-200"
                         src={product.image_url || 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400'}
                         alt={product.name}
                       />
                     </div>
                     <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                      <div className="text-sm text-gray-500 max-w-xs truncate">
+                      <div className="text-sm font-bold text-gray-900">{product.name}</div>
+                      <div className="text-sm text-gray-600 max-w-xs truncate">
                         {product.description}
                       </div>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">
+                  <div className="text-sm font-bold text-rose-600">
                     {formatPrice(product.price)}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <button
                     onClick={() => toggleStock(product)}
-                    className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                    className={`inline-flex px-3 py-1 text-xs font-bold rounded-full shadow-md transition-all duration-200 ${
                       product.in_stock
-                        ? 'bg-green-100 text-green-800 hover:bg-green-200'
-                        : 'bg-red-100 text-red-800 hover:bg-red-200'
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600 hover:shadow-lg'
+                        : 'bg-red-500 text-white hover:bg-red-600 hover:shadow-lg'
                     }`}
                   >
                     {product.in_stock ? 'In Stock' : 'Out of Stock'}
@@ -284,13 +284,13 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
                   <div className="flex space-x-2">
                     <button
                       onClick={() => handleEdit(product)}
-                      className="text-indigo-600 hover:text-indigo-900"
+                      className="text-blue-600 hover:text-blue-800 p-2 rounded-full hover:bg-blue-100 transition-all duration-200"
                     >
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button
                       onClick={() => handleDelete(product.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-800 p-2 rounded-full hover:bg-red-100 transition-all duration-200"
                     >
                       <Trash2 className="h-4 w-4" />
                     </button>
@@ -304,10 +304,10 @@ const AdminProductTable: React.FC<AdminProductTableProps> = ({ products, onProdu
 
       {products.length === 0 && (
         <div className="px-6 py-12 text-center">
-          <p className="text-gray-500 text-lg">No products found.</p>
+          <p className="text-gray-500 text-lg font-semibold">No products found.</p>
           <button
             onClick={() => setShowAddForm(true)}
-            className="mt-4 inline-flex items-center px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-md hover:bg-rose-700"
+            className="mt-4 inline-flex items-center px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-600 text-white text-sm font-bold rounded-md hover:from-rose-600 hover:to-pink-700 shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Your First Product

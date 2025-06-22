@@ -1,4 +1,4 @@
-// GET /api/products - Fetch all products
+// GET/POST /api/products - Fetch all products or create new product
 export async function onRequest(context) {
   const { request, env } = context;
   

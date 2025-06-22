@@ -1,4 +1,4 @@
-// GET/POST /api/orders - Fetch orders or create new order
+// POST /api/orders - Create new order
 export async function onRequest(context) {
   const { request, env } = context;
   
@@ -41,9 +41,21 @@ export async function onRequest(context) {
       const { items, total, whatsapp } = body;
 
       // Validate required fields
-      if (!items || !total) {
+      if (!items || !Array.isArray(items) || items.length === 0) {
         return new Response(JSON.stringify({
-          error: 'Items and total are required'
+          error: 'Items array is required and cannot be empty'
+        }), {
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+
+      if (!total || typeof total !== 'number') {
+        return new Response(JSON.stringify({
+          error: 'Total is required and must be a number'
         }), {
           status: 400,
           headers: {
@@ -58,18 +70,23 @@ export async function onRequest(context) {
         'INSERT INTO orders (items, total, whatsapp) VALUES (?, ?, ?)'
       ).bind(
         JSON.stringify(items),
-        parseInt(total),
+        total,
         whatsapp || 'pending'
       ).run();
 
       if (!result.success) {
-        throw new Error('Failed to create order');
+        console.error('Database insert failed:', result);
+        throw new Error('Failed to create order in database');
       }
 
       // Fetch the created order
       const { results } = await env.DB.prepare(
         'SELECT * FROM orders WHERE id = ?'
       ).bind(result.meta.last_row_id).all();
+
+      if (!results || results.length === 0) {
+        throw new Error('Failed to retrieve created order');
+      }
 
       const createdOrder = {
         ...results[0],
