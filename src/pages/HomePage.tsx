@@ -28,7 +28,7 @@ const HomePage: React.FC = () => {
       const res = await fetch('/api/products');
       if (!res.ok) throw new Error('Failed to fetch products');
       const data = await res.json();
-      setProducts(data);
+      setProducts(data.data || []); // ✅ FIX: Use data.data
     } catch (error: any) {
       console.error('Error fetching products:', error);
       setError('Failed to load products. Please try again.');
