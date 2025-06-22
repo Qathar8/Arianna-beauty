@@ -1,5 +1,5 @@
 // GET/POST /api/orders - Fetch orders or create new order
-export async function onRequest(context: any) {
+export async function onRequest(context) {
   const { request, env } = context;
   
   // Handle CORS preflight
@@ -22,15 +22,12 @@ export async function onRequest(context: any) {
       ).all();
 
       // Parse JSON items for each order
-      const ordersWithParsedItems = results.map((order: any) => ({
+      const ordersWithParsedItems = results.map((order) => ({
         ...order,
         items: JSON.parse(order.items || '[]')
       }));
 
-      return new Response(JSON.stringify({
-        data: ordersWithParsedItems,
-        error: null
-      }), {
+      return new Response(JSON.stringify(ordersWithParsedItems), {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
@@ -46,8 +43,7 @@ export async function onRequest(context: any) {
       // Validate required fields
       if (!items || !total) {
         return new Response(JSON.stringify({
-          data: null,
-          error: { message: 'Items and total are required' }
+          error: 'Items and total are required'
         }), {
           status: 400,
           headers: {
@@ -57,14 +53,10 @@ export async function onRequest(context: any) {
         });
       }
 
-      // Generate UUID for the order
-      const orderId = crypto.randomUUID();
-
       // Insert new order
       const result = await env.DB.prepare(
-        'INSERT INTO orders (id, items, total, whatsapp) VALUES (?, ?, ?, ?)'
+        'INSERT INTO orders (items, total, whatsapp) VALUES (?, ?, ?)'
       ).bind(
-        orderId,
         JSON.stringify(items),
         parseInt(total),
         whatsapp || 'pending'
@@ -77,17 +69,14 @@ export async function onRequest(context: any) {
       // Fetch the created order
       const { results } = await env.DB.prepare(
         'SELECT * FROM orders WHERE id = ?'
-      ).bind(orderId).all();
+      ).bind(result.meta.last_row_id).all();
 
       const createdOrder = {
         ...results[0],
         items: JSON.parse(results[0].items || '[]')
       };
 
-      return new Response(JSON.stringify({
-        data: createdOrder,
-        error: null
-      }), {
+      return new Response(JSON.stringify(createdOrder), {
         status: 201,
         headers: {
           'Content-Type': 'application/json',
@@ -97,7 +86,7 @@ export async function onRequest(context: any) {
     }
 
     return new Response(JSON.stringify({
-      error: { message: 'Method not allowed' }
+      error: 'Method not allowed'
     }), {
       status: 405,
       headers: {
@@ -106,11 +95,10 @@ export async function onRequest(context: any) {
       },
     });
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('Orders API Error:', error);
     return new Response(JSON.stringify({
-      data: null,
-      error: { message: error.message || 'Internal server error' }
+      error: error.message || 'Internal server error'
     }), {
       status: 500,
       headers: {
