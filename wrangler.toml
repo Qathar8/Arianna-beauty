@@ -8,10 +8,23 @@ pages_build_output_dir = "./dist"
 
   # Bind D1 database
   [[env.production.d1_databases]]
-  binding = "arianna-beauty-db"
+  binding = "DB"
   database_name = "arianna-beauty-db"
   database_id = "952038a3-7ab5-406b-9193-12e8ebfccc5f"
 
   # Set environment variables
   [env.production.vars]
   NODE_ENV = "production"
+
+# ✅ Configuration for preview/development environment
+[env.preview]
+
+  # Bind D1 database for preview
+  [[env.preview.d1_databases]]
+  binding = "DB"
+  database_name = "arianna-beauty-db-preview"
+  database_id = "your-preview-database-id-here"
+
+  # Set environment variables
+  [env.preview.vars]
+  NODE_ENV = "development"
