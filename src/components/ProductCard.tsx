@@ -1,5 +1,6 @@
 import React from 'react';
-import { ShoppingBag, AlertCircle } from 'lucide-react';
+import { ShoppingBag, AlertCircle, Plus } from 'lucide-react';
+import { useCart } from '../context/CartContext';
 
 interface Product {
   id: number;
@@ -15,6 +16,8 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addItem } = useCart();
+
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-KE', {
       style: 'currency',
@@ -23,7 +26,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }).format(price);
   };
 
-  const handleOrderViaWhatsApp = async () => {
+  const handleAddToCart = () => {
+    if (!product.in_stock) return;
+
+    // Convert the D1 product to cart format
+    const cartProduct = {
+      id: product.id.toString(),
+      name: product.name,
+      price: product.price,
+      image: product.image_url || 'https://images.pexels.com/photos/965989/pexels-photo-965989.jpeg?auto=compress&cs=tinysrgb&w=400',
+      description: product.description || '',
+      category: 'perfume' as const // Default category for D1 products
+    };
+
+    addItem(cartProduct);
+  };
+
+  const handleDirectWhatsAppOrder = async () => {
     if (!product.in_stock) return;
 
     try {
@@ -41,8 +60,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         whatsapp: 'pending',
       };
 
-      console.log('Sending order payload:', orderPayload);
-
       const res = await fetch('/api/orders', {
         method: 'POST',
         headers: { 
@@ -51,9 +68,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         },
         body: JSON.stringify(orderPayload),
       });
-
-      console.log('Response status:', res.status);
-      console.log('Response headers:', Object.fromEntries(res.headers.entries()));
 
       if (!res.ok) {
         const errorText = await res.text();
@@ -72,7 +86,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       }
 
       const data = await res.json();
-      console.log('Order created successfully:', data);
 
       const message = `Hello ARIANNA BEAUTY! I'd like to order:
 
@@ -129,27 +142,53 @@ Please confirm availability and provide payment details.`;
           <span className="text-2xl font-bold text-rose-600">{formatPrice(product.price)}</span>
         </div>
 
-        <button
-          onClick={handleOrderViaWhatsApp}
-          disabled={!product.in_stock}
-          className={`w-full inline-flex items-center justify-center px-6 py-3 font-bold rounded-full shadow-lg transition-all duration-200 ${
-            product.in_stock
-              ? 'bg-gradient-to-r from-rose-500 to-pink-600 text-white hover:from-rose-600 hover:to-pink-700 hover:scale-105 hover:shadow-xl transform'
-              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-          }`}
-        >
-          {product.in_stock ? (
-            <>
-              <ShoppingBag className="h-5 w-5 mr-2" />
-              Order via WhatsApp
-            </>
-          ) : (
-            <>
-              <AlertCircle className="h-5 w-5 mr-2" />
-              Out of Stock
-            </>
-          )}
-        </button>
+        <div className="space-y-3">
+          {/* Add to Cart Button */}
+          <button
+            onClick={handleAddToCart}
+            disabled={!product.in_stock}
+            className={`w-full inline-flex items-center justify-center px-6 py-3 font-bold rounded-full shadow-lg transition-all duration-200 ${
+              product.in_stock
+                ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 hover:scale-105 hover:shadow-xl transform'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            {product.in_stock ? (
+              <>
+                <Plus className="h-5 w-5 mr-2" />
+                Add to Cart
+              </>
+            ) : (
+              <>
+                <AlertCircle className="h-5 w-5 mr-2" />
+                Out of Stock
+              </>
+            )}
+          </button>
+
+          {/* Direct WhatsApp Order Button */}
+          <button
+            onClick={handleDirectWhatsAppOrder}
+            disabled={!product.in_stock}
+            className={`w-full inline-flex items-center justify-center px-6 py-3 font-bold rounded-full shadow-lg transition-all duration-200 ${
+              product.in_stock
+                ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white hover:from-green-600 hover:to-emerald-700 hover:scale-105 hover:shadow-xl transform'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            {product.in_stock ? (
+              <>
+                <ShoppingBag className="h-5 w-5 mr-2" />
+                Order via WhatsApp
+              </>
+            ) : (
+              <>
+                <AlertCircle className="h-5 w-5 mr-2" />
+                Out of Stock
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );
