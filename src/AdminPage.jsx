@@ -23,14 +23,14 @@ export default function AdminPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const res = await fetch("/api/add-product", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...product,
-        price: parseFloat(product.price),
-      }),
-    });
+  const res = await fetch("/api/products", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    ...product,
+    price: parseFloat(product.price), // ensure price is number
+  }),
+});
 
     const data = await res.json();
     alert(data.message);
